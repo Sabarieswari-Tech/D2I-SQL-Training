@@ -1,0 +1,783 @@
+-- ============================================================
+-- LIBRARY MANAGEMENT SYSTEM - SQL PRACTICE
+-- ============================================================
+
+-- 01. INNER JOIN
+SELECT Book.book_name, Members.member_name
+FROM Book
+INNER JOIN Borrow ON Book.book_id = Borrow.book_id
+INNER JOIN Members ON Borrow.member_id = Members.member_id;
+
+
+-- 02. BOOK, MEMBER & DATE
+SELECT Book.book_name, Members.member_name, Borrow.borrow_date
+FROM Book
+INNER JOIN Borrow ON Book.book_id = Borrow.book_id
+INNER JOIN Members ON Borrow.member_id = Members.member_id;
+
+
+-- 03. BOOK, AUTHOR & CITY
+SELECT Book.book_name, Book.author, Members.member_name, Members.city
+FROM Book
+INNER JOIN Borrow ON Book.book_id = Borrow.book_id
+INNER JOIN Members ON Borrow.member_id = Members.member_id;
+
+
+-- 04. CHENNAI BOOKS
+SELECT Book.book_name, Members.member_name
+FROM Book
+INNER JOIN Borrow ON Book.book_id = Borrow.book_id
+INNER JOIN Members ON Borrow.member_id = Members.member_id
+WHERE Members.city = 'Chennai';
+
+
+-- 05. BOOKS BY MEMBER
+SELECT Book.book_name, Members.member_name
+FROM Book
+INNER JOIN Borrow ON Book.book_id = Borrow.book_id
+INNER JOIN Members ON Borrow.member_id = Members.member_id
+WHERE Members.member_id = 11;
+
+
+-- 06. TECHNOLOGY BORROWERS
+SELECT Members.member_name
+FROM Members
+INNER JOIN Borrow ON Members.member_id = Borrow.member_id
+INNER JOIN Book ON Borrow.book_id = Book.book_id
+WHERE Book.category = 'technology';
+
+
+-- 07. BOOKS & BORROWERS
+SELECT Book.book_name, Members.member_name
+FROM Book
+INNER JOIN Borrow ON Book.book_id = Borrow.book_id
+INNER JOIN Members ON Borrow.member_id = Members.member_id;
+
+
+-- 08. BORROW DATE SORT
+SELECT Book.book_name, Members.member_name, Borrow.borrow_date
+FROM Book
+INNER JOIN Borrow ON Book.book_id = Borrow.book_id
+INNER JOIN Members ON Borrow.member_id = Members.member_id
+ORDER BY Borrow.borrow_date;
+
+
+-- 09. LEFT JOIN
+SELECT Book.book_name, Members.member_name
+FROM Book
+LEFT JOIN Borrow ON Book.book_id = Borrow.book_id
+LEFT JOIN Members ON Borrow.member_id = Members.member_id;
+
+
+-- 10. ALL BOOKS
+SELECT Book.book_name, Members.member_name
+FROM Book
+LEFT JOIN Borrow ON Book.book_id = Borrow.book_id
+LEFT JOIN Members ON Borrow.member_id = Members.member_id;
+
+
+-- 11. ALL MEMBERS
+SELECT Members.member_name, Book.book_name
+FROM Members
+LEFT JOIN Borrow ON Members.member_id = Borrow.member_id
+LEFT JOIN Book ON Borrow.book_id = Book.book_id;
+
+
+-- 12. NEVER BORROWED BOOKS
+SELECT Book.book_name
+FROM Book
+LEFT JOIN Borrow ON Book.book_id = Borrow.book_id
+WHERE Borrow.book_id IS NULL;
+
+
+-- 13. NEVER BORROWED MEMBERS
+SELECT Members.member_name
+FROM Members
+LEFT JOIN Borrow ON Members.member_id = Borrow.member_id
+WHERE Borrow.member_id IS NULL;
+
+
+-- 14. RIGHT JOIN BOOKS
+SELECT Borrow.borrow_id, Book.book_name
+FROM Book
+RIGHT JOIN Borrow ON Book.book_id = Borrow.book_id;
+
+
+-- 15. RIGHT JOIN MEMBERS
+SELECT Borrow.borrow_id, Members.member_name
+FROM Members
+RIGHT JOIN Borrow ON Members.member_id = Borrow.member_id;
+
+
+-- 16. RIGHT JOIN BORROW
+SELECT Members.member_name, Borrow.borrow_id, Borrow.borrow_date
+FROM Members
+RIGHT JOIN Borrow ON Members.member_id = Borrow.member_id;
+
+
+-- 17. CROSS JOIN
+SELECT Book.book_name, Members.member_name
+FROM Book
+CROSS JOIN Members;
+
+
+-- 18. CROSS JOIN COUNT
+SELECT COUNT(*) AS total_combinations
+FROM Book
+CROSS JOIN Members;
+
+
+-- 19. TECHNOLOGY CROSS JOIN
+SELECT Members.member_name, Book.book_name
+FROM Members
+CROSS JOIN Book
+WHERE Book.category = 'technology';
+
+
+-- 20. BOOKS BY MEMBER COUNT
+SELECT Members.member_name,
+       COUNT(Borrow.book_id) AS book_count
+FROM Members
+LEFT JOIN Borrow ON Members.member_id = Borrow.member_id
+GROUP BY Members.member_id, Members.member_name;
+
+
+-- 21. MEMBERS BY BOOK
+SELECT Book.book_name,
+       COUNT(Borrow.member_id) AS member_count
+FROM Book
+LEFT JOIN Borrow ON Book.book_id = Borrow.book_id
+GROUP BY Book.book_id, Book.book_name;
+
+
+-- 22. MOST BORROWED BOOK
+SELECT Book.book_name,
+       COUNT(Borrow.borrow_id) AS borrow_count
+FROM Book
+JOIN Borrow ON Book.book_id = Borrow.book_id
+GROUP BY Book.book_id, Book.book_name
+ORDER BY borrow_count DESC
+LIMIT 1;
+
+
+-- 23. MEMBERS WITH MORE THAN 2 BOOKS
+SELECT Members.member_name,
+       COUNT(Borrow.borrow_id) AS book_count
+FROM Members
+JOIN Borrow ON Members.member_id = Borrow.member_id
+GROUP BY Members.member_id, Members.member_name
+HAVING COUNT(Borrow.borrow_id) > 2;
+
+
+-- 24. BORROWS BY CATEGORY
+SELECT Book.category,
+       COUNT(Borrow.borrow_id) AS borrow_count
+FROM Book
+JOIN Borrow ON Book.book_id = Borrow.book_id
+GROUP BY Book.category;
+
+
+-- 25. TOTAL BORROWED BY CATEGORY
+SELECT Book.category,
+       COUNT(Borrow.book_id) AS total_borrowed
+FROM Book
+JOIN Borrow ON Book.book_id = Borrow.book_id
+GROUP BY Book.category;
+
+
+-- 26. PRICE ABOVE AVERAGE
+SELECT *
+FROM Book
+WHERE price > (
+    SELECT AVG(price)
+    FROM Book
+);
+
+
+-- 27. PRICE BELOW AVERAGE
+SELECT *
+FROM Book
+WHERE price < (
+    SELECT AVG(price)
+    FROM Book
+);
+
+
+-- 28. MOST EXPENSIVE BOOK
+SELECT *
+FROM Book
+WHERE price = (
+    SELECT MAX(price)
+    FROM Book
+);
+
+
+-- 29. CHEAPEST BOOK
+SELECT *
+FROM Book
+WHERE price = (
+    SELECT MIN(price)
+    FROM Book
+);
+
+
+-- 30. SAME PRICE AS BOOK
+SELECT *
+FROM Book
+WHERE price = (
+    SELECT price
+    FROM Book
+    WHERE book_id = 102
+);
+
+
+-- 31. STOCK ABOVE AVERAGE
+SELECT *
+FROM Book
+WHERE stock_quantity > (
+    SELECT AVG(stock_quantity)
+    FROM Book
+);
+
+
+-- 32. MULTIPLE BOOK CATEGORIES
+SELECT *
+FROM Book
+WHERE category IN (
+    SELECT category
+    FROM Book
+    GROUP BY category
+    HAVING COUNT(*) > 1
+);
+
+
+-- 33. MULTIPLE BOOK AUTHORS
+SELECT *
+FROM Book
+WHERE author IN (
+    SELECT author
+    FROM Book
+    GROUP BY author
+    HAVING COUNT(*) > 1
+);
+
+
+-- 34. CATEGORY AVERAGE ABOVE 500
+SELECT *
+FROM Book
+WHERE category IN (
+    SELECT category
+    FROM Book
+    GROUP BY category
+    HAVING AVG(price) > 500
+);
+
+
+-- 35. TECHNOLOGY MEMBERS
+SELECT *
+FROM Members
+WHERE member_id IN (
+    SELECT Borrow.member_id
+    FROM Borrow
+    JOIN Book ON Borrow.book_id = Book.book_id
+    WHERE Book.category = 'technology'
+);
+
+
+-- 36. NEVER BORROWED BOOKS
+SELECT *
+FROM Book
+WHERE book_id NOT IN (
+    SELECT book_id
+    FROM Borrow
+);
+
+
+-- 37. NEVER BORROWED MEMBERS
+SELECT *
+FROM Members
+WHERE member_id NOT IN (
+    SELECT member_id
+    FROM Borrow
+);
+
+
+-- 38. NEVER BORROWED AUTHORS
+SELECT *
+FROM Book
+WHERE author NOT IN (
+    SELECT Book.author
+    FROM Book
+    JOIN Borrow ON Book.book_id = Borrow.book_id
+);
+
+
+-- 39. BORROWED BOOKS
+SELECT *
+FROM Book
+WHERE EXISTS (
+    SELECT 1
+    FROM Borrow
+    WHERE Borrow.book_id = Book.book_id
+);
+
+
+-- 40. BORROWED MEMBERS
+SELECT *
+FROM Members
+WHERE EXISTS (
+    SELECT 1
+    FROM Borrow
+    WHERE Borrow.member_id = Members.member_id
+);
+
+
+-- 41. BOOKS BORROWED TWICE
+SELECT *
+FROM Book
+WHERE EXISTS (
+    SELECT 1
+    FROM Borrow
+    WHERE Borrow.book_id = Book.book_id
+    GROUP BY Borrow.book_id
+    HAVING COUNT(*) >= 2
+);
+
+
+-- 42. CTE AVERAGE PRICE
+WITH avg_price AS (
+    SELECT AVG(price) AS average_price
+    FROM Book
+)
+SELECT Book.*
+FROM Book, avg_price
+WHERE Book.price > avg_price.average_price;
+
+
+-- 43. CTE CATEGORY AVERAGE
+WITH category_price AS (
+    SELECT category,
+           AVG(price) AS average_price
+    FROM Book
+    GROUP BY category
+)
+SELECT *
+FROM category_price;
+
+
+-- 44. PRICE ABOVE CATEGORY AVERAGE
+WITH category_price AS (
+    SELECT category,
+           AVG(price) AS average_price
+    FROM Book
+    GROUP BY category
+)
+SELECT Book.*
+FROM Book
+JOIN category_price
+    ON Book.category = category_price.category
+WHERE Book.price > category_price.average_price;
+
+
+-- 45. CATEGORY TOTAL STOCK
+WITH category_stock AS (
+    SELECT category,
+           SUM(stock_quantity) AS total_stock
+    FROM Book
+    GROUP BY category
+)
+SELECT *
+FROM category_stock
+WHERE total_stock > 20;
+
+
+-- 46. MOST EXPENSIVE BY CATEGORY
+WITH category_price AS (
+    SELECT category,
+           MAX(price) AS highest_price
+    FROM Book
+    GROUP BY category
+)
+SELECT *
+FROM category_price;
+
+
+-- 47. BOOKS BY AUTHOR COUNT
+WITH author_count AS (
+    SELECT author,
+           COUNT(*) AS book_count
+    FROM Book
+    GROUP BY author
+)
+SELECT *
+FROM author_count;
+
+
+-- 48. AUTHORS WITH MORE THAN ONE BOOK
+WITH author_count AS (
+    SELECT author,
+           COUNT(*) AS book_count
+    FROM Book
+    GROUP BY author
+)
+SELECT *
+FROM author_count
+WHERE book_count > 1;
+
+
+-- 49. RANK PRICE DESC
+SELECT *,
+       RANK() OVER (ORDER BY price DESC) AS price_rank
+FROM Book;
+
+
+-- 50. RANK PRICE ASC
+SELECT *,
+       RANK() OVER (ORDER BY price ASC) AS price_rank
+FROM Book;
+
+
+-- 51. ROW NUMBER
+SELECT *,
+       ROW_NUMBER() OVER (ORDER BY price) AS row_number
+FROM Book;
+
+
+-- 52. RANK BY CATEGORY
+SELECT *,
+       RANK() OVER (
+           PARTITION BY category
+           ORDER BY price DESC
+       ) AS category_rank
+FROM Book;
+
+
+-- 53. DENSE RANK BY CATEGORY
+SELECT *,
+       DENSE_RANK() OVER (
+           PARTITION BY category
+           ORDER BY price DESC
+       ) AS category_rank
+FROM Book;
+
+
+-- 54. CATEGORY AVERAGE
+SELECT *,
+       AVG(price) OVER (
+           PARTITION BY category
+       ) AS category_average
+FROM Book;
+
+
+-- 55. HIGHEST CATEGORY PRICE
+SELECT *,
+       MAX(price) OVER (
+           PARTITION BY category
+       ) AS highest_price
+FROM Book;
+
+
+-- 56. LOWEST CATEGORY PRICE
+SELECT *,
+       MIN(price) OVER (
+           PARTITION BY category
+       ) AS lowest_price
+FROM Book;
+
+
+-- 57. DIFFERENCE FROM AVERAGE
+SELECT *,
+       price - AVG(price) OVER (
+           PARTITION BY category
+       ) AS difference
+FROM Book;
+
+
+-- 58. CUMULATIVE STOCK
+SELECT *,
+       SUM(stock_quantity) OVER (
+           ORDER BY book_id
+       ) AS cumulative_stock
+FROM Book;
+
+
+-- 59. CATEGORY CUMULATIVE STOCK
+SELECT *,
+       SUM(stock_quantity) OVER (
+           PARTITION BY category
+           ORDER BY book_id
+       ) AS cumulative_stock
+FROM Book;
+
+
+-- 60. PREVIOUS PRICE
+SELECT *,
+       LAG(price) OVER (
+           ORDER BY book_id
+       ) AS previous_price
+FROM Book;
+
+
+-- 61. NEXT PRICE
+SELECT *,
+       LEAD(price) OVER (
+           ORDER BY book_id
+       ) AS next_price
+FROM Book;
+
+
+-- 62. PRICE DIFFERENCE
+SELECT *,
+       price - LAG(price) OVER (
+           ORDER BY book_id
+       ) AS price_difference
+FROM Book;
+
+
+-- 63. EXPENSIVE / AFFORDABLE
+SELECT book_name,
+       price,
+       CASE
+           WHEN price > 600 THEN 'Expensive'
+           ELSE 'Affordable'
+       END AS price_category
+FROM Book;
+
+
+-- 64. PRICE CLASSIFICATION
+SELECT book_name,
+       price,
+       CASE
+           WHEN price < 400 THEN 'Low'
+           WHEN price <= 700 THEN 'Medium'
+           ELSE 'High'
+       END AS price_category
+FROM Book;
+
+
+-- 65. STOCK CLASSIFICATION
+SELECT book_name,
+       stock_quantity,
+       CASE
+           WHEN stock_quantity = 0 THEN 'Out of Stock'
+           WHEN stock_quantity BETWEEN 1 AND 5 THEN 'Low Stock'
+           ELSE 'Available'
+       END AS stock_status
+FROM Book;
+
+
+-- 66. PRICE CATEGORY
+SELECT book_name,
+       price,
+       CASE
+           WHEN price > 600 THEN 'Expensive'
+           ELSE 'Affordable'
+       END AS price_category
+FROM Book;
+
+
+-- 67. STOCK STATUS
+SELECT book_name,
+       stock_quantity,
+       CASE
+           WHEN stock_quantity = 0 THEN 'Out of Stock'
+           WHEN stock_quantity BETWEEN 1 AND 5 THEN 'Low Stock'
+           ELSE 'Available'
+       END AS stock_status
+FROM Book;
+
+
+-- 68. COUNT PRICE CATEGORIES
+SELECT
+    CASE
+        WHEN price < 400 THEN 'Low'
+        WHEN price <= 700 THEN 'Medium'
+        ELSE 'High'
+    END AS price_category,
+    COUNT(*) AS book_count
+FROM Book
+GROUP BY
+    CASE
+        WHEN price < 400 THEN 'Low'
+        WHEN price <= 700 THEN 'Medium'
+        ELSE 'High'
+    END;
+
+
+-- 69. DISCOUNT PRICE
+SELECT book_name,
+       price,
+       CASE
+           WHEN price > 700 THEN price - 100
+           ELSE price
+       END AS final_price
+FROM Book;
+
+
+-- 70. TECHNOLOGY VIEW
+CREATE VIEW Technology_Books AS
+SELECT *
+FROM Book
+WHERE category = 'technology';
+
+
+-- 71. DISPLAY TECHNOLOGY VIEW
+SELECT *
+FROM Technology_Books;
+
+
+-- 72. EXPENSIVE VIEW
+CREATE VIEW Expensive_Books AS
+SELECT *
+FROM Book
+WHERE price > 600;
+
+
+-- 73. AVAILABLE BOOKS VIEW
+CREATE VIEW Available_Books AS
+SELECT *
+FROM Book
+WHERE stock_quantity > 0;
+
+
+-- 74. BORROW DETAILS VIEW
+CREATE VIEW Library_Borrow_Details AS
+SELECT Book.book_name,
+       Book.author,
+       Members.member_name,
+       Members.city,
+       Borrow.borrow_date
+FROM Book
+JOIN Borrow ON Book.book_id = Borrow.book_id
+JOIN Members ON Borrow.member_id = Members.member_id;
+
+
+-- 75. DISPLAY BORROW VIEW
+SELECT *
+FROM Library_Borrow_Details;
+
+
+-- 76. CATEGORY AVERAGE VIEW
+CREATE VIEW Category_Average AS
+SELECT category,
+       AVG(price) AS average_price
+FROM Book
+GROUP BY category;
+
+
+-- 77. BORROWED MEMBERS VIEW
+CREATE VIEW Borrowed_Members AS
+SELECT DISTINCT
+       Members.member_id,
+       Members.member_name
+FROM Members
+JOIN Borrow ON Members.member_id = Borrow.member_id;
+
+
+-- 78. VIEW STRUCTURE
+DESCRIBE Technology_Books;
+
+
+-- 79. DROP VIEW
+DROP VIEW Technology_Books;
+
+
+-- 80. GET ALL BOOKS
+DELIMITER //
+
+CREATE PROCEDURE GetAllBooks()
+BEGIN
+    SELECT *
+    FROM Book;
+END //
+
+DELIMITER ;
+
+CALL GetAllBooks();
+
+
+-- 81. GET ALL MEMBERS
+DELIMITER //
+
+CREATE PROCEDURE GetAllMembers()
+BEGIN
+    SELECT *
+    FROM Members;
+END //
+
+DELIMITER ;
+
+CALL GetAllMembers();
+
+
+-- 82. BOOKS BY CATEGORY
+DELIMITER //
+
+CREATE PROCEDURE GetBooksByCategory(IN cat VARCHAR(100))
+BEGIN
+    SELECT *
+    FROM Book
+    WHERE category = cat;
+END //
+
+DELIMITER ;
+
+CALL GetBooksByCategory('technology');
+
+
+-- 83. BOOKS BY AUTHOR
+DELIMITER //
+
+CREATE PROCEDURE GetBooksByAuthor(IN auth VARCHAR(100))
+BEGIN
+    SELECT *
+    FROM Book
+    WHERE author = auth;
+END //
+
+DELIMITER ;
+
+
+-- 84. BOOKS ABOVE PRICE
+DELIMITER //
+
+CREATE PROCEDURE GetBooksAbovePrice(IN p DECIMAL(10,2))
+BEGIN
+    SELECT *
+    FROM Book
+    WHERE price > p;
+END //
+
+DELIMITER ;
+
+
+-- 85. MEMBER BORROW DETAILS
+DELIMITER //
+
+CREATE PROCEDURE GetMemberBorrowDetails(IN id INT)
+BEGIN
+    SELECT Book.book_name,
+           Borrow.borrow_date
+    FROM Book
+    JOIN Borrow ON Book.book_id = Borrow.book_id
+    WHERE Borrow.member_id = id;
+END //
+
+DELIMITER ;
+
+
+-- 86. CATEGORY PRICE LIMIT
+DELIMITER //
+
+CREATE PROCEDURE GetCategoryBooks(
+    IN cat VARCHAR(100),
+    IN p DECIMAL(10,2)
+)
+BEGIN
+    SELECT *
+    FROM Book
+    WHERE category = cat
+      AND price <= p;
+END //
+
+DELIMITER ;
