@@ -1,0 +1,394 @@
+LIBRARY MANAGEMENT SYSTEM
+SQL TASK
+
+
+-- A1 – DDL
+
+-- 1. Create Database
+CREATE DATABASE LibraryDB;
+USE LibraryDB;
+
+-- 2. Create Books Table
+CREATE TABLE Books(
+book_id INT PRIMARY KEY,
+book_name VARCHAR(100),
+author VARCHAR(100),
+price DECIMAL(10,2)
+);
+
+-- 3. Create Members Table
+CREATE TABLE Members(
+member_id INT PRIMARY KEY,
+member_name VARCHAR(100),
+city VARCHAR(50),
+phone VARCHAR(15)
+);
+
+-- 4. Create Borrow Table
+CREATE TABLE Borrow(
+borrow_id INT PRIMARY KEY,
+book_id INT,
+member_id INT,
+borrow_date DATE
+);
+
+-- 5. Add Category
+ALTER TABLE Books ADD category VARCHAR(50);
+
+-- 6. Add Quantity
+ALTER TABLE Books ADD quantity INT;
+
+-- 7. Add Email
+ALTER TABLE Members ADD email VARCHAR(100);
+
+-- 8. Add Return Date
+ALTER TABLE Borrow ADD return_date DATE;
+
+-- 9. Modify Price
+ALTER TABLE Books MODIFY price DECIMAL(10,2);
+
+-- 10. Rename Quantity
+ALTER TABLE Books RENAME COLUMN quantity TO stock_quantity;
+
+-- 11. Display Books Structure
+DESC Books;
+
+-- 12. Display Members Structure
+DESC Members;
+
+-- 13. Display Borrow Structure
+DESC Borrow;
+
+
+-- A2 – DML
+
+-- 14. Insert Books
+INSERT INTO Books VALUES
+(101,'Python Basics','James Brown',450,'Programming',15),
+(102,'Data Science','John Smith',650,'Data Science',10),
+(103,'SQL Basics','David Lee',750,'Technology',12),
+(104,'Machine Learning','Andrew Ng',850,'Technology',8),
+(105,'Web Development','Robert Martin',550,'Technology',20),
+(106,'Digital Marketing','Philip Kotler',400,'Business',5),
+(107,'Artificial Intelligence','Stuart Russell',900,'Technology',7),
+(108,'Clean Code','Robert Martin',700,'Programming',14),
+(109,'Deep Learning','Ian Goodfellow',950,'Technology',6),
+(110,'Database Systems','Abraham Silberschatz',600,'Database',10);
+
+-- 15. Insert Members
+INSERT INTO Members VALUES
+(201,'Arun','Chennai','9876543210','arun@gmail.com'),
+(202,'Priya','Madurai','9876543211','priya@gmail.com'),
+(203,'Karthik','Tirunelveli','9876543212','karthik@gmail.com'),
+(204,'Divya','Coimbatore','9876543213','divya@gmail.com'),
+(205,'Rahul','Chennai','9876543214','rahul@gmail.com'),
+(206,'Meena','Trichy','9876543215','meena@gmail.com'),
+(207,'Vijay','Salem','9876543216','vijay@gmail.com'),
+(208,'Anitha','Madurai','9876543217','anitha@gmail.com');
+
+-- 16. Insert Borrow Records
+INSERT INTO Borrow VALUES
+(301,101,201,'2026-01-05',NULL),
+(302,102,202,'2026-01-06',NULL),
+(303,103,203,'2026-01-07',NULL),
+(304,104,201,'2026-01-08',NULL),
+(305,105,204,'2026-01-09',NULL),
+(306,107,205,'2026-01-10',NULL),
+(307,108,206,'2026-01-11',NULL),
+(308,109,207,'2026-01-12',NULL),
+(309,101,202,'2026-01-13',NULL),
+(310,103,205,'2026-01-14',NULL);
+
+-- 17. Insert Additional Book
+INSERT INTO Books VALUES
+(111,'Cloud Computing','Thomas Erl',800,'Technology',9);
+
+-- 18. Insert Additional Member
+INSERT INTO Members VALUES
+(209,'Suresh','Bangalore','9876543218','suresh@gmail.com');
+
+-- 19. Insert New Borrow Record
+INSERT INTO Borrow VALUES
+(311,111,209,'2026-01-15',NULL);
+
+
+-- UPDATE
+
+-- 20. Update Book Price
+UPDATE Books SET price=800 WHERE book_id=103;
+
+-- 21. Increase Technology Book Price
+UPDATE Books
+SET price=price*1.10
+WHERE category='Technology';
+
+-- 22. Increase Stock Quantity
+UPDATE Books
+SET stock_quantity=stock_quantity+5;
+
+-- 23. Update Member City
+UPDATE Members
+SET city='Chennai'
+WHERE member_id=203;
+
+-- 24. Update Member Email
+UPDATE Members
+SET email='karthik@gmail.com'
+WHERE member_id=203;
+
+-- 25. Change Book Category
+UPDATE Books
+SET category='Programming'
+WHERE book_id=101;
+
+-- 26. Update Return Date
+UPDATE Borrow
+SET return_date='2026-02-01'
+WHERE borrow_id=301;
+
+
+-- DELETE
+
+-- 27. Delete Book
+DELETE FROM Books WHERE book_id=106;
+
+-- 28. Delete Member
+DELETE FROM Members WHERE member_id=208;
+
+-- 29. Delete Borrow Record
+DELETE FROM Borrow WHERE borrow_id=310;
+
+-- 30. Delete Books With Zero Stock
+DELETE FROM Books WHERE stock_quantity=0;
+
+
+-- A3 – DQL
+
+-- 31. Display All Books
+SELECT * FROM Books;
+
+-- 32. Display Book Name and Author
+SELECT book_name,author FROM Books;
+
+-- 33. Display Book Name, Category and Price
+SELECT book_name,category,price FROM Books;
+
+-- 34. Books Above 500
+SELECT * FROM Books WHERE price>500;
+
+-- 35. Books Below 500
+SELECT * FROM Books WHERE price<500;
+
+-- 36. Books Between 300 and 800
+SELECT * FROM Books
+WHERE price BETWEEN 300 AND 800;
+
+-- 37. Technology Books
+SELECT * FROM Books
+WHERE category='Technology';
+
+
+-- A4 – DCL
+
+-- 38. Create User
+CREATE USER 'library_user'@'localhost'
+IDENTIFIED BY 'Library@123';
+
+-- 39. Grant SELECT
+GRANT SELECT ON LibraryDB.Books
+TO 'library_user'@'localhost';
+
+-- 40. Grant INSERT
+GRANT INSERT ON LibraryDB.Books
+TO 'library_user'@'localhost';
+
+-- 41. Grant UPDATE
+GRANT UPDATE ON LibraryDB.Books
+TO 'library_user'@'localhost';
+
+-- 42. Display Privileges
+SHOW GRANTS FOR 'library_user'@'localhost';
+
+-- 43. Revoke INSERT
+REVOKE INSERT ON LibraryDB.Books
+FROM 'library_user'@'localhost';
+
+-- 44. Revoke UPDATE
+REVOKE UPDATE ON LibraryDB.Books
+FROM 'library_user'@'localhost';
+
+-- 45. Grant SELECT on All Tables
+GRANT SELECT ON LibraryDB.*
+TO 'library_user'@'localhost';
+
+-- 46. Revoke SELECT from Books
+REVOKE SELECT ON LibraryDB.Books
+FROM 'library_user'@'localhost';
+
+-- 47. Display Final Privileges
+SHOW GRANTS FOR 'library_user'@'localhost';
+
+
+-- A5 – SORTING AND LIMIT
+
+-- 48. Price Ascending
+SELECT * FROM Books
+ORDER BY price ASC;
+
+-- 49. Price Descending
+SELECT * FROM Books
+ORDER BY price DESC;
+
+-- 50. Sort by Book Name
+SELECT * FROM Books
+ORDER BY book_name;
+
+-- 51. Sort by Category and Price
+SELECT * FROM Books
+ORDER BY category,price;
+
+-- 52. Three Most Expensive Books
+SELECT * FROM Books
+ORDER BY price DESC
+LIMIT 3;
+
+-- 53. Three Cheapest Books
+SELECT * FROM Books
+ORDER BY price
+LIMIT 3;
+
+-- 54. Five Highest Stock Books
+SELECT * FROM Books
+ORDER BY stock_quantity DESC
+LIMIT 5;
+
+-- 55. First Five Members
+SELECT * FROM Members
+ORDER BY member_name
+LIMIT 5;
+
+-- 56. Latest Five Borrow Records
+SELECT * FROM Borrow
+ORDER BY borrow_date DESC
+LIMIT 5;
+
+
+-- A6 – AGGREGATE FUNCTIONS
+
+-- 57. Count Books
+SELECT COUNT(*) FROM Books;
+
+-- 58. Count Members
+SELECT COUNT(*) FROM Members;
+
+-- 59. Count Borrow Records
+SELECT COUNT(*) FROM Borrow;
+
+-- 60. Total Stock
+SELECT SUM(stock_quantity) FROM Books;
+
+-- 61. Total Price
+SELECT SUM(price) FROM Books;
+
+-- 62. Average Price
+SELECT AVG(price) FROM Books;
+
+-- 63. Highest Price
+SELECT MAX(price) FROM Books;
+
+-- 64. Lowest Price
+SELECT MIN(price) FROM Books;
+
+-- 65. Price Difference
+SELECT MAX(price)-MIN(price) FROM Books;
+
+-- 66. Average Stock
+SELECT AVG(stock_quantity) FROM Books;
+
+
+-- A7 – GROUP BY
+
+-- 67. Books in Each Category
+SELECT category,COUNT(*)
+FROM Books
+GROUP BY category;
+
+-- 68. Average Price in Each Category
+SELECT category,AVG(price)
+FROM Books
+GROUP BY category;
+
+-- 69. Highest Price in Each Category
+SELECT category,MAX(price)
+FROM Books
+GROUP BY category;
+
+-- 70. Lowest Price in Each Category
+SELECT category,MIN(price)
+FROM Books
+GROUP BY category;
+
+-- 71. Total Stock in Each Category
+SELECT category,SUM(stock_quantity)
+FROM Books
+GROUP BY category;
+
+-- 72. Total Value in Each Category
+SELECT category,SUM(price*stock_quantity)
+FROM Books
+GROUP BY category;
+
+-- 73. Categories With More Than 2 Books
+SELECT category,COUNT(*)
+FROM Books
+GROUP BY category
+HAVING COUNT(*)>2;
+
+-- 74. Categories With Average Price Above 500
+SELECT category,AVG(price)
+FROM Books
+GROUP BY category
+HAVING AVG(price)>500;
+
+-- 75. Books Written by Each Author
+SELECT author,COUNT(*)
+FROM Books
+GROUP BY author;
+
+-- 76. Average Price by Author
+SELECT author,AVG(price)
+FROM Books
+GROUP BY author;
+
+
+-- A8 – HAVING
+
+-- 77. Categories With More Than 2 Books
+SELECT category,COUNT(*)
+FROM Books
+GROUP BY category
+HAVING COUNT(*)>2;
+
+-- 78. Categories With Average Price Above 500
+SELECT category,AVG(price)
+FROM Books
+GROUP BY category
+HAVING AVG(price)>500;
+
+-- 79. Authors With More Than One Book
+SELECT author,COUNT(*)
+FROM Books
+GROUP BY author
+HAVING COUNT(*)>1;
+
+-- 80. Categories With Stock Above 20
+SELECT category,SUM(stock_quantity)
+FROM Books
+GROUP BY category
+HAVING SUM(stock_quantity)>20;
+
+-- 81. Authors With Average Price Above 600
+SELECT author,AVG(price)
+FROM Books
+GROUP BY author
+HAVING AVG(price)>600;
